@@ -117,7 +117,12 @@ func discoverAndConnect(ctx context.Context, h host.Host, rd *routing.RoutingDis
 
 			if h.Network().Connectedness(peerInfo.ID) != network.Connected {
 				fmt.Printf("\n[+] Found peer %s. Connecting...\n", peerInfo.ID.ShortString())
-				if err := h.Connect(ctx, peerInfo); err != nil {
+				connectCtx, cancel := context.WithTimeout(ctx, 3*time.Second)
+				err := h.Connect(connectCtx, peerInfo)
+				cancel()
+				if err != nil {
+					// Offline / dead peer from a previous run, skip silently
+					fmt.Printf("Failed to connect to peer %s: %v\n", peerInfo.ID.ShortString(), err)
 					continue
 				}
 			}
