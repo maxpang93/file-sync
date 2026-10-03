@@ -19,8 +19,8 @@ import (
 )
 
 const (
-	RendezvousString = "file-sync-p2p-v1"
-	ProtocolID       = protocol.ID("/file-sync/1.0.0") // Custom application stream identifier
+	RendezvousString = "filesync-p2p-v1"
+	ProtocolID       = protocol.ID("/filesync/1.0.0") // Custom application stream identifier
 )
 
 var greetedPeers sync.Map // Prevents duplicate "Hello World" spam

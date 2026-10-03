@@ -1,4 +1,4 @@
-module file-sync
+module filesync
 
 go 1.26.0
 
