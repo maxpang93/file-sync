@@ -11,12 +11,12 @@ import (
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/peer"
 
-	filesyncproto "filesync/internal/protocol"
+	proto "filesync/internal/protocol"
 )
 
 type P2PHost struct {
-	host host.Host
-	dht  *dht.IpfsDHT
+	Host host.Host
+	DHT  *dht.IpfsDHT
 }
 
 func NewHost() (*P2PHost, error) {
@@ -44,25 +44,25 @@ func NewHost() (*P2PHost, error) {
 	for _, addr := range host.Addrs() {
 		log.Printf("Listening on: %s/p2p/%s\n", addr, host.ID())
 	}
-	h := P2PHost{host: host}
+	h := P2PHost{Host: host}
 	return &h, nil
 }
 
 // Register handler for incoming streams
 func (h *P2PHost) RegisterStream() {
-	h.host.SetStreamHandler(filesyncproto.ManifestProtocolID, filesyncproto.HandleManifestStream)
+	h.Host.SetStreamHandler(proto.ManifestProtocolID, proto.HandleManifestStream)
 }
 
 // Connect to Kademlia DHT
 func (h *P2PHost) SetupDHT(ctx context.Context) error {
-	kademliaDHT, err := dht.New(h.host, dht.Mode(dht.ModeAuto))
+	kademliaDHT, err := dht.New(h.Host, dht.Mode(dht.ModeAuto))
 	if err != nil {
 		return fmt.Errorf("initialize Kademlia DHT: %w", err)
 	}
 	if err = kademliaDHT.Bootstrap(ctx); err != nil {
 		return fmt.Errorf("bootstrap DHT: %w", err)
 	}
-	h.dht = kademliaDHT
+	h.DHT = kademliaDHT
 	return nil
 }
 
@@ -74,7 +74,7 @@ func (h *P2PHost) Bootstrap(ctx context.Context) {
 		wg.Add(1)
 		go func(pi peer.AddrInfo) {
 			defer wg.Done()
-			_ = h.host.Connect(ctx, pi)
+			_ = h.Host.Connect(ctx, pi)
 		}(p)
 	}
 	wg.Wait()

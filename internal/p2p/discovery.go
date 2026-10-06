@@ -19,11 +19,11 @@ const (
 )
 
 func (h *P2PHost) Initiate(ctx context.Context) error {
-	routingDiscovery := routing.NewRoutingDiscovery(h.dht)
+	routingDiscovery := routing.NewRoutingDiscovery(h.DHT)
 	dutil.Advertise(ctx, routingDiscovery, RendezvousString)
 	log.Println("Announced presence to DHT. Looking for peers...")
 
-	return discoverAndConnect(ctx, h.host, routingDiscovery)
+	return discoverAndConnect(ctx, h.Host, routingDiscovery)
 }
 
 func discoverAndConnect(ctx context.Context, h host.Host, rd *routing.RoutingDiscovery) error {

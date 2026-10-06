@@ -132,7 +132,7 @@ func processData(action string) ([]byte, error) {
 	return nil, fmt.Errorf("invalid action %s", action)
 }
 
-func requestManifest(ctx context.Context, h host.Host, target peer.ID) (*fs.Manifest, error) {
+func RequestManifest(ctx context.Context, h host.Host, target peer.ID) (*fs.Manifest, error) {
 	stream, err := h.NewStream(ctx, target, ManifestProtocolID)
 	if err != nil {
 		return nil, fmt.Errorf("open stream to %s: %w", target.ShortString(), err)
